@@ -2,6 +2,7 @@ import sys
 import pygame
 from bullet import Bullet
 
+
 def check_events(ship, bullets, screen, game_settings):
     """reakcja na zdarzenie generowane przez mysz i klawiature"""
     for event in pygame.event.get():
@@ -26,10 +27,23 @@ def check_keydown_events(event, ship, bullets, screen, game_settings):
     elif event.key == pygame.K_LEFT:
         ship.moving_left = True
     elif event.key == pygame.K_SPACE:
-        # utworzenie nowego pocisku i dodanie go do grupy
-        if len(bullets) < game_settings.bullets_allowed:
-            new_bullet = Bullet(screen, ship, game_settings)
-            bullets.add(new_bullet)
+        fire_bullet(bullets, game_settings, screen, ship)
+
+
+def fire_bullet(bullets, game_settings, screen, ship):
+    # utworzenie nowego pocisku i dodanie go do grupy
+    if len(bullets) < game_settings.bullets_allowed:
+        new_bullet = Bullet(screen, ship, game_settings)
+        bullets.add(new_bullet)
+
+
+def update_bullets(bullets):
+    """uktualnienie polozenia pociskow i usuniecie niewidocznych na ekranie"""
+    bullets.update()
+    # usuniecie pocisku poza ekranem
+    for bullet in bullets.copy():
+        if bullet.rect.bottom <= 0:
+            bullets.remove(bullet)
 
 
 def update_screen(game_settings, screen, ship, bullets):
