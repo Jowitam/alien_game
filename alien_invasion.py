@@ -1,8 +1,8 @@
-import sys
 import pygame
 
 from settings import Settings
 from ship import Ship
+import game_functions as gf
 
 
 def run_game():
@@ -18,16 +18,11 @@ def run_game():
 
     # Rozpoczecie glownej petlii while w grze
     while True:
-        # oczekiwanie na akcje uzytkownika
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
+        gf.check_events()
 
-        # odswiezanie ekranu
-        screen.fill(game_settings.screen_color)
-        ship.blitme()
+        gf.update_screen(game_settings, screen, ship)
 
-        # Wyswietlenie ekranu ostatnio zmodyfikowanego
-        pygame.display.flip()
+
+
 
 run_game()
