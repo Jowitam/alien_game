@@ -14,12 +14,12 @@ def run_game():
     pygame.display.set_caption("Inwazja obcych")
 
     # utworzenie statku
-    ship = Ship(screen)
+    ship = Ship(screen, game_settings)
 
     # Rozpoczecie glownej petlii while w grze
     while True:
-        gf.check_events()
-
+        gf.check_events(ship)
+        ship.update()
         gf.update_screen(game_settings, screen, ship)
 
 
