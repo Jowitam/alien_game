@@ -1,5 +1,7 @@
 import sys
 import pygame
+
+from alien import Alien
 from bullet import Bullet
 
 
@@ -48,7 +50,7 @@ def update_bullets(bullets):
             bullets.remove(bullet)
 
 
-def update_screen(game_settings, screen, ship, bullets, alien):
+def update_screen(game_settings, screen, ship, bullets, aliens):
     """uaktualnienie obrazow na ekranie i przejscie do nowego ekranu"""
     # odswiezanie ekranu
     screen.fill(game_settings.screen_color)
@@ -58,7 +60,45 @@ def update_screen(game_settings, screen, ship, bullets, alien):
         bullet.draw_bullet()
 
     ship.blitme()
-    alien.blitme()
+    aliens.draw(screen)
 
     # Wyswietlenie ekranu ostatnio zmodyfikowanego
     pygame.display.flip()
+
+
+def create_alien_fleet(game_settings, screen, aliens, ship):
+    """stworzenie pelnej floty obcych"""
+    # stworzenie obcego i ustalenie odleglosci miedzy nimi
+    alien = Alien(screen, game_settings)
+    number_aliens_x = get_number_aliens_x(alien.rect.width, game_settings)
+    number_rows = get_number_rows(game_settings, alien.rect.height, ship.rect.height)
+
+    # stworzenie floty obcych
+    for row_number in range(number_rows):
+        for alien_number in range(number_aliens_x):
+            # tworzenie obcego w rzedzie i postawienie na ekranie
+            create_alien(alien_number, aliens, game_settings, screen, row_number)
+
+
+def create_alien(alien_number, aliens, game_settings, screen, row_number):
+    """utworzenie obcego i umieszczenie go w rzedzie"""
+    alien = Alien(screen, game_settings)
+    alien_width = alien.rect.width
+    alien.x = alien_width + 2 * alien_width * alien_number
+    alien.rect.x = alien.x
+    alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
+    aliens.add(alien)
+
+
+def get_number_aliens_x(alien_width, game_settings):
+    """ustalenie liczby obcych w rzedzie"""
+    available_space_x = game_settings.screen_width - 2 * alien_width
+    number_aliens_x = int(available_space_x / (2 * alien_width))
+    return number_aliens_x
+
+
+def get_number_rows(game_settings, alien_height, ship_height):
+    """ustalenie liczy rzedow na ekranie od statku dwa rzedy wolne"""
+    available_space_y = (game_settings.screen_height - (3 * alien_height) - ship_height)
+    number_rows = int(available_space_y / (2*alien_height))
+    return number_rows
