@@ -20,3 +20,6 @@ class Settings():
 
         # ustawienia floty obcych
         self.alien_speed_factor = 1
+        self.alien_drop_speed = 10
+        # 1 poruszanie w prawo, -1 poruszanie w lewo
+        self.alien_direction = 1

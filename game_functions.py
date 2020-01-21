@@ -49,8 +49,9 @@ def update_bullets(bullets):
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
 
-def update_aliens(aliens):
-    """uaktualnienie polozenia obcych we flocie"""
+def update_aliens(aliens, game_settings):
+    """sprawdzenie czy flota przy krawedzi, uaktualnienie polozenia obcych we flocie"""
+    check_aliens_edges(game_settings, aliens)
     aliens.update()
 
 
@@ -106,3 +107,17 @@ def get_number_rows(game_settings, alien_height, ship_height):
     available_space_y = (game_settings.screen_height - (3 * alien_height) - ship_height)
     number_rows = int(available_space_y / (2*alien_height))
     return number_rows
+
+
+def check_aliens_edges(game_settings, aliens):
+    """reakcja na dotarcie obcego do krawedzi"""
+    for alien in aliens.sprites():
+        if alien.check_edges():
+            change_alien_direction(game_settings, aliens)
+            break
+
+def change_alien_direction(game_settings, aliens):
+    """przesuniecie obcych w dol i zmiana kierunku"""
+    for alien in aliens.sprites():
+        alien.rect.y += game_settings.alien_drop_speed
+    game_settings.alien_direction *= -1
