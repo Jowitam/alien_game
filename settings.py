@@ -1,7 +1,6 @@
 class Settings():
     """przechowuje wszystkie ustawienia w grze"""
 
-
     def __init__(self):
         """inicjalizacja ustawien"""
         # ustawienia ekranu
@@ -18,3 +17,6 @@ class Settings():
         self.bullet_height = 15
         self.bullet_color = (60, 60, 60)
         self.bullets_allowed = 3
+
+        # ustawienia floty obcych
+        self.alien_speed_factor = 1

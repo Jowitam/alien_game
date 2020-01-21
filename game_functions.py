@@ -49,6 +49,10 @@ def update_bullets(bullets):
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
 
+def update_aliens(aliens):
+    """uaktualnienie polozenia obcych we flocie"""
+    aliens.update()
+
 
 def update_screen(game_settings, screen, ship, bullets, aliens):
     """uaktualnienie obrazow na ekranie i przejscie do nowego ekranu"""

@@ -24,3 +24,9 @@ class Alien(Sprite):
     def blitme(self):
         """wyswietlanie obcego w jego aktualnym polozeniu"""
         self.screen.blit(self.image, self.rect)
+
+    def update(self):
+        """poruszanie floty"""
+        # poruszanie w prawo
+        self.x += self.game_settings.alien_speed_factor
+        self.rect.x = self.x
