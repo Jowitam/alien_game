@@ -1,9 +1,9 @@
 import pygame
-import settings
 
 
 class Ship():
     """odpowiedzialna za statek strzelajacy"""
+
     def __init__(self, screen, game_settings):
         """inicjalizacja statku i jego polozenie na ekranie"""
         self.screen = screen

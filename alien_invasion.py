@@ -1,5 +1,7 @@
 import pygame
 from pygame.sprite import Group
+
+from alien import Alien
 from settings import Settings
 from ship import Ship
 import game_functions as gf
@@ -19,12 +21,15 @@ def run_game():
     # utworzenie grupy pociskow
     bullets = Group()
 
+    # utworzenie obcego
+    alien = Alien(screen, game_settings)
+
     # Rozpoczecie glownej petlii while w grze
     while True:
         gf.check_events(ship, bullets, screen, game_settings)
         ship.update()
         gf.update_bullets(bullets)
-        gf.update_screen(game_settings, screen, ship, bullets)
+        gf.update_screen(game_settings, screen, ship, bullets, alien)
 
 
 
