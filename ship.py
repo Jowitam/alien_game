@@ -1,7 +1,7 @@
 import pygame
 
 
-class Ship():
+class Ship:
     """odpowiedzialna za statek strzelajacy"""
 
     def __init__(self, screen, game_settings):
@@ -39,3 +39,7 @@ class Ship():
     def blitme(self):
         """wyswietlenie statku w jego aktualnym polozeniu"""
         self.screen.blit(self.image, self.rect)
+
+    def center_ship(self):
+        """umieszczenie statku na srodku na dole ekranu"""
+        self.center = self.screen_rect.centerx

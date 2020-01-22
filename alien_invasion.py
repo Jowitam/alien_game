@@ -3,6 +3,7 @@ from pygame.sprite import Group
 
 from settings import Settings
 from ship import Ship
+from game_stats import GameStats
 import game_functions as gf
 
 
@@ -13,6 +14,9 @@ def run_game():
 
     screen = pygame.display.set_mode((game_settings.screen_width, game_settings.screen_height))
     pygame.display.set_caption("Inwazja obcych")
+
+    # utworzenie objektu do przechowywania danych statycznych
+    stats = GameStats(game_settings)
 
     # utworzenie statku, grupy pociskow oraz grupy obcych
     ship = Ship(screen, game_settings)
@@ -27,7 +31,7 @@ def run_game():
         gf.check_events(ship, bullets, screen, game_settings)
         ship.update()
         gf.update_bullets(bullets, aliens, game_settings, screen, ship)
-        gf.update_aliens(aliens, game_settings)
+        gf.update_aliens(aliens, game_settings, ship, stats, bullets, screen)
         gf.update_screen(game_settings, screen, ship, bullets, aliens)
 
 

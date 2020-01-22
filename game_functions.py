@@ -1,6 +1,6 @@
 import sys
 import pygame
-
+from time import sleep
 from alien import Alien
 from bullet import Bullet
 
@@ -49,18 +49,43 @@ def update_bullets(bullets, aliens, game_settings, screen, ship):
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
 
-    # sprawdzenie czy pocisk trafil obcego - gdy tak usuniecie obcego i pocisku
-    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+    check_bullet_alien_collisions(aliens, bullets, game_settings, screen, ship)
 
+
+def check_bullet_alien_collisions(aliens, bullets, game_settings, screen, ship):
+    # sprawdzenie czy pocisk trafil obcego - gdy tak usuniecie obcego i pocisku
+    pygame.sprite.groupcollide(bullets, aliens, True, True)
     # utworzenie nowej floty po zestrzeleniu oraz pozbycie sie wystrzelonych pociskow
     if len(aliens) == 0:
         bullets.empty()
-        create_alien_fleet(game_settings, screen, aliens,ship)
+        create_alien_fleet(game_settings, screen, aliens, ship)
 
-def update_aliens(aliens, game_settings):
+
+def update_aliens(aliens, game_settings, ship, stats, bullets, screen):
     """sprawdzenie czy flota przy krawedzi, uaktualnienie polozenia obcych we flocie"""
     check_aliens_edges(game_settings, aliens)
     aliens.update()
+    # wykrycie kolizji miedzy statkiem a obcym
+    if pygame.sprite.spritecollideany(ship, aliens):
+        ship_hit(stats, aliens, bullets, ship, game_settings, screen)
+    # wyszukanie obcych ktorzy dotarli do dolnej krawedzi
+    check_aliens_bottom(screen, aliens, bullets, ship, stats, game_settings)
+
+def ship_hit(stats, aliens, bullets, ship, game_settings, screen):
+    """reakcja na uderzenie obcego w statek"""
+    # zmniejszenie liczby statkow
+    stats.ships_left -= 1
+
+    # usuniecie pozostalych obcych i pociskow
+    aliens.empty()
+    bullets.empty()
+
+    # nowa flota i nowy statek
+    create_alien_fleet(game_settings, screen, aliens, ship)
+    ship.center_ship()
+
+    # pauza
+    sleep(1)
 
 
 def update_screen(game_settings, screen, ship, bullets, aliens):
@@ -130,3 +155,11 @@ def change_alien_direction(game_settings, aliens):
     for alien in aliens.sprites():
         alien.rect.y += game_settings.alien_drop_speed
     game_settings.alien_direction *= -1
+
+def check_aliens_bottom(screen, aliens, bullets, ship, stats, game_settings):
+    """sprawdzenie czy obcy dotarli do dolnej krawedzi"""
+    screen_rect = screen.get_rect()
+    for alien in aliens.sprites():
+        if alien.rect.bottom >= screen_rect.bottom:
+            ship_hit(stats, aliens, bullets, ship, game_settings, screen)
+            break
