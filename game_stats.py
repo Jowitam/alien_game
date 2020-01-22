@@ -5,6 +5,8 @@ class GameStats():
         """inicjalizacja danych statycznych"""
         self.game_settings = game_settings
         self.reset_stats()
+        # stan aktywny gry
+        self.game_active = True
 
     def reset_stats(self):
         """inicjalizacja danych statycznych ktore zmieniaja sie w trakcie gry"""

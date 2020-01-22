@@ -73,20 +73,19 @@ def update_aliens(aliens, game_settings, ship, stats, bullets, screen):
 
 def ship_hit(stats, aliens, bullets, ship, game_settings, screen):
     """reakcja na uderzenie obcego w statek"""
-    # zmniejszenie liczby statkow
-    stats.ships_left -= 1
-
-    # usuniecie pozostalych obcych i pociskow
-    aliens.empty()
-    bullets.empty()
-
-    # nowa flota i nowy statek
-    create_alien_fleet(game_settings, screen, aliens, ship)
-    ship.center_ship()
-
-    # pauza
-    sleep(1)
-
+    if stats.ships_left > 0:
+        # zmniejszenie liczby statkow
+        stats.ships_left -= 1
+        # usuniecie pozostalych obcych i pociskow
+        aliens.empty()
+        bullets.empty()
+        # nowa flota i nowy statek
+        create_alien_fleet(game_settings, screen, aliens, ship)
+        ship.center_ship()
+        # pauza
+        sleep(1)
+    else:
+        stats.game_active = False
 
 def update_screen(game_settings, screen, ship, bullets, aliens):
     """uaktualnienie obrazow na ekranie i przejscie do nowego ekranu"""
