@@ -5,7 +5,7 @@ from alien import Alien
 from bullet import Bullet
 
 
-def check_events(ship, bullets, screen, game_settings):
+def check_events(ship, bullets, screen, game_settings, play_button, stats):
     """reakcja na zdarzenie generowane przez mysz i klawiature"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -14,6 +14,14 @@ def check_events(ship, bullets, screen, game_settings):
             check_keydown_events(event, ship, bullets, screen, game_settings)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            check_play_button(play_button, mouse_x, mouse_y, stats)
+
+def check_play_button(play_button, mouse_x, mouse_y, stats):
+    """Rozpoczecie nowej gry po kliknieciu w przycisk GRA"""
+    if play_button.rect.collidepoint(mouse_x, mouse_y):
+        stats.game_active = True
 
 
 def check_keydown_events(event, ship, bullets, screen, game_settings):
@@ -87,7 +95,7 @@ def ship_hit(stats, aliens, bullets, ship, game_settings, screen):
     else:
         stats.game_active = False
 
-def update_screen(game_settings, screen, ship, bullets, aliens):
+def update_screen(game_settings, screen, ship, bullets, aliens, play_button, stats):
     """uaktualnienie obrazow na ekranie i przejscie do nowego ekranu"""
     # odswiezanie ekranu
     screen.fill(game_settings.screen_color)
@@ -98,6 +106,10 @@ def update_screen(game_settings, screen, ship, bullets, aliens):
 
     ship.blitme()
     aliens.draw(screen)
+
+    # wyswietlenie przycisku tylko wtedy kiedy gra jest nieaktywna
+    if not stats.game_active:
+        play_button.draw_button()
 
     # Wyswietlenie ekranu ostatnio zmodyfikowanego
     pygame.display.flip()
