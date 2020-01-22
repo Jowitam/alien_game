@@ -41,13 +41,21 @@ def fire_bullet(bullets, game_settings, screen, ship):
         bullets.add(new_bullet)
 
 
-def update_bullets(bullets):
+def update_bullets(bullets, aliens, game_settings, screen, ship):
     """uktualnienie polozenia pociskow i usuniecie niewidocznych na ekranie"""
     bullets.update()
     # usuniecie pocisku poza ekranem
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
+
+    # sprawdzenie czy pocisk trafil obcego - gdy tak usuniecie obcego i pocisku
+    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+
+    # utworzenie nowej floty po zestrzeleniu oraz pozbycie sie wystrzelonych pociskow
+    if len(aliens) == 0:
+        bullets.empty()
+        create_alien_fleet(game_settings, screen, aliens,ship)
 
 def update_aliens(aliens, game_settings):
     """sprawdzenie czy flota przy krawedzi, uaktualnienie polozenia obcych we flocie"""
@@ -105,7 +113,7 @@ def get_number_aliens_x(alien_width, game_settings):
 def get_number_rows(game_settings, alien_height, ship_height):
     """ustalenie liczy rzedow na ekranie od statku dwa rzedy wolne"""
     available_space_y = (game_settings.screen_height - (3 * alien_height) - ship_height)
-    number_rows = int(available_space_y / (2*alien_height))
+    number_rows = int(available_space_y / (2 * alien_height))
     return number_rows
 
 
@@ -115,6 +123,7 @@ def check_aliens_edges(game_settings, aliens):
         if alien.check_edges():
             change_alien_direction(game_settings, aliens)
             break
+
 
 def change_alien_direction(game_settings, aliens):
     """przesuniecie obcych w dol i zmiana kierunku"""
