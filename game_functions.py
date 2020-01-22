@@ -5,7 +5,7 @@ from alien import Alien
 from bullet import Bullet
 
 
-def check_events(ship, bullets, screen, game_settings, play_button, stats):
+def check_events(ship, bullets, screen, game_settings, play_button, stats, aliens):
     """reakcja na zdarzenie generowane przez mysz i klawiature"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -16,12 +16,21 @@ def check_events(ship, bullets, screen, game_settings, play_button, stats):
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(play_button, mouse_x, mouse_y, stats)
+            check_play_button(play_button, mouse_x, mouse_y, stats,aliens, bullets, ship, game_settings, screen)
 
-def check_play_button(play_button, mouse_x, mouse_y, stats):
+def check_play_button(play_button, mouse_x, mouse_y, stats, aliens, bullets, ship, game_settings, screen):
     """Rozpoczecie nowej gry po kliknieciu w przycisk GRA"""
-    if play_button.rect.collidepoint(mouse_x, mouse_y):
+    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and not stats.game_active:
+        # wyzwerowanie danych statycznych
+        stats.reset_stats()
         stats.game_active = True
+        # usuniecie obcych, pociskow
+        aliens.empty()
+        bullets.empty()
+        # nowa flota i statek
+        create_alien_fleet(game_settings, screen, aliens, ship)
+        ship.center_ship()
 
 
 def check_keydown_events(event, ship, bullets, screen, game_settings):

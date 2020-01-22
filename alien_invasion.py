@@ -32,7 +32,7 @@ def run_game():
 
     # Rozpoczecie glownej petlii while w grze
     while True:
-        gf.check_events(ship, bullets, screen, game_settings, play_button, stats)
+        gf.check_events(ship, bullets, screen, game_settings, play_button, stats, aliens)
 
         if stats.game_active:
             ship.update()
