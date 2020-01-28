@@ -16,12 +16,15 @@ def check_events(ship, bullets, screen, game_settings, play_button, stats, alien
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(play_button, mouse_x, mouse_y, stats,aliens, bullets, ship, game_settings, screen)
+            check_play_button(play_button, mouse_x, mouse_y, stats, aliens, bullets, ship, game_settings, screen)
+
 
 def check_play_button(play_button, mouse_x, mouse_y, stats, aliens, bullets, ship, game_settings, screen):
     """Rozpoczecie nowej gry po kliknieciu w przycisk GRA"""
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
+        # wyzerowanie ustawien dot gry - szybkosci
+        game_settings.initialize_dynamic_settings()
         # ukrycie kursora myszy
         pygame.mouse.set_visible(False)
         # wyzwerowanie danych statycznych
@@ -74,9 +77,10 @@ def update_bullets(bullets, aliens, game_settings, screen, ship):
 def check_bullet_alien_collisions(aliens, bullets, game_settings, screen, ship):
     # sprawdzenie czy pocisk trafil obcego - gdy tak usuniecie obcego i pocisku
     pygame.sprite.groupcollide(bullets, aliens, True, True)
-    # utworzenie nowej floty po zestrzeleniu oraz pozbycie sie wystrzelonych pociskow
+    # utworzenie nowej floty po zestrzeleniu oraz przyspieszenie gry oraz pozbycie sie wystrzelonych pociskow
     if len(aliens) == 0:
         bullets.empty()
+        game_settings.increase_speed()
         create_alien_fleet(game_settings, screen, aliens, ship)
 
 
@@ -89,6 +93,7 @@ def update_aliens(aliens, game_settings, ship, stats, bullets, screen):
         ship_hit(stats, aliens, bullets, ship, game_settings, screen)
     # wyszukanie obcych ktorzy dotarli do dolnej krawedzi
     check_aliens_bottom(screen, aliens, bullets, ship, stats, game_settings)
+
 
 def ship_hit(stats, aliens, bullets, ship, game_settings, screen):
     """reakcja na uderzenie obcego w statek"""
@@ -179,6 +184,7 @@ def change_alien_direction(game_settings, aliens):
     for alien in aliens.sprites():
         alien.rect.y += game_settings.alien_drop_speed
     game_settings.alien_direction *= -1
+
 
 def check_aliens_bottom(screen, aliens, bullets, ship, stats, game_settings):
     """sprawdzenie czy obcy dotarli do dolnej krawedzi"""
