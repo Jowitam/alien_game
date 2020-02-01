@@ -63,7 +63,7 @@ def fire_bullet(bullets, game_settings, screen, ship):
         bullets.add(new_bullet)
 
 
-def update_bullets(bullets, aliens, game_settings, screen, ship):
+def update_bullets(bullets, aliens, game_settings, screen, ship, stats, score_board):
     """uktualnienie polozenia pociskow i usuniecie niewidocznych na ekranie"""
     bullets.update()
     # usuniecie pocisku poza ekranem
@@ -71,12 +71,17 @@ def update_bullets(bullets, aliens, game_settings, screen, ship):
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
 
-    check_bullet_alien_collisions(aliens, bullets, game_settings, screen, ship)
+    check_bullet_alien_collisions(aliens, bullets, game_settings, screen, ship, stats, score_board)
 
 
-def check_bullet_alien_collisions(aliens, bullets, game_settings, screen, ship):
+def check_bullet_alien_collisions(aliens, bullets, game_settings, screen, ship, stats, score_board):
     # sprawdzenie czy pocisk trafil obcego - gdy tak usuniecie obcego i pocisku
-    pygame.sprite.groupcollide(bullets, aliens, True, True)
+    colisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+    if colisions:
+        for aliens in colisions.values():
+            stats.score += game_settings.alien_points * len(aliens)
+            score_board.prep_score()
+
     # utworzenie nowej floty po zestrzeleniu oraz przyspieszenie gry oraz pozbycie sie wystrzelonych pociskow
     if len(aliens) == 0:
         bullets.empty()
@@ -113,7 +118,7 @@ def ship_hit(stats, aliens, bullets, ship, game_settings, screen):
         pygame.mouse.set_visible(True)
 
 
-def update_screen(game_settings, screen, ship, bullets, aliens, play_button, stats):
+def update_screen(game_settings, screen, ship, bullets, aliens, play_button, stats, score_board):
     """uaktualnienie obrazow na ekranie i przejscie do nowego ekranu"""
     # odswiezanie ekranu
     screen.fill(game_settings.screen_color)
@@ -124,6 +129,8 @@ def update_screen(game_settings, screen, ship, bullets, aliens, play_button, sta
 
     ship.blitme()
     aliens.draw(screen)
+    # wyswietlenie informacji o punktach
+    score_board.show_score()
 
     # wyswietlenie przycisku tylko wtedy kiedy gra jest nieaktywna
     if not stats.game_active:

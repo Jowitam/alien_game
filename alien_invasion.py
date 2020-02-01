@@ -1,6 +1,7 @@
 import pygame
 from pygame.sprite import Group
 
+from scoreboard import Scoreboard
 from settings import Settings
 from ship import Ship
 from game_stats import GameStats
@@ -19,8 +20,9 @@ def run_game():
     # utworzenie przycisku GRA
     play_button = Button(game_settings, screen, "Gra")
 
-    # utworzenie objektu do przechowywania danych statycznych
+    # utworzenie objektu do przechowywania danych statycznych oraz klasy scoreboard
     stats = GameStats(game_settings)
+    score_board = Scoreboard(screen, game_settings, stats)
 
     # utworzenie statku, grupy pociskow oraz grupy obcych
     ship = Ship(screen, game_settings)
@@ -36,10 +38,10 @@ def run_game():
 
         if stats.game_active:
             ship.update()
-            gf.update_bullets(bullets, aliens, game_settings, screen, ship)
+            gf.update_bullets(bullets, aliens, game_settings, screen, ship, stats, score_board)
             gf.update_aliens(aliens, game_settings, ship, stats, bullets, screen)
 
-        gf.update_screen(game_settings, screen, ship, bullets, aliens, play_button, stats)
+        gf.update_screen(game_settings, screen, ship, bullets, aliens, play_button, stats, score_board)
 
 
 run_game()
