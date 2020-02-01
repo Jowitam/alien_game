@@ -37,6 +37,7 @@ def check_play_button(play_button, mouse_x, mouse_y, stats, aliens, bullets, shi
         score_board.prep_score()
         score_board.prep_high_score()
         score_board.prep_level()
+        score_board.prep_ships()
 
         # usuniecie obcych, pociskow
         aliens.empty()
@@ -104,22 +105,24 @@ def check_bullet_alien_collisions(aliens, bullets, game_settings, screen, ship, 
         create_alien_fleet(game_settings, screen, aliens, ship)
 
 
-def update_aliens(aliens, game_settings, ship, stats, bullets, screen):
+def update_aliens(aliens, game_settings, ship, stats, bullets, screen, score_board):
     """sprawdzenie czy flota przy krawedzi, uaktualnienie polozenia obcych we flocie"""
     check_aliens_edges(game_settings, aliens)
     aliens.update()
     # wykrycie kolizji miedzy statkiem a obcym
     if pygame.sprite.spritecollideany(ship, aliens):
-        ship_hit(stats, aliens, bullets, ship, game_settings, screen)
+        ship_hit(stats, aliens, bullets, ship, game_settings, screen, score_board)
     # wyszukanie obcych ktorzy dotarli do dolnej krawedzi
-    check_aliens_bottom(screen, aliens, bullets, ship, stats, game_settings)
+    check_aliens_bottom(screen, aliens, bullets, ship, stats, game_settings, score_board)
 
 
-def ship_hit(stats, aliens, bullets, ship, game_settings, screen):
+def ship_hit(stats, aliens, bullets, ship, game_settings, screen, score_board):
     """reakcja na uderzenie obcego w statek"""
     if stats.ships_left > 0:
         # zmniejszenie liczby statkow
         stats.ships_left -= 1
+        # uaktualnienie tablicy wynikow
+        score_board.prep_ships()
         # usuniecie pozostalych obcych i pociskow
         aliens.empty()
         bullets.empty()
@@ -208,12 +211,12 @@ def change_alien_direction(game_settings, aliens):
     game_settings.alien_direction *= -1
 
 
-def check_aliens_bottom(screen, aliens, bullets, ship, stats, game_settings):
+def check_aliens_bottom(screen, aliens, bullets, ship, stats, game_settings, score_board):
     """sprawdzenie czy obcy dotarli do dolnej krawedzi"""
     screen_rect = screen.get_rect()
     for alien in aliens.sprites():
         if alien.rect.bottom >= screen_rect.bottom:
-            ship_hit(stats, aliens, bullets, ship, game_settings, screen)
+            ship_hit(stats, aliens, bullets, ship, game_settings, screen, score_board)
             break
 
 

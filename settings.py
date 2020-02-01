@@ -1,4 +1,4 @@
-class Settings():
+class Settings:
     """przechowuje wszystkie ustawienia w grze"""
 
     def __init__(self):
@@ -46,8 +46,3 @@ class Settings():
         self.bullet_speed_factor *= self.speedup_scale
         self.alien_speed_factor *= self.speedup_scale
         self.alien_points = int(self.alien_points * self.score_scale)
-
-
-
-
-

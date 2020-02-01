@@ -1,11 +1,13 @@
 import pygame
+from pygame.sprite import Sprite
 
 
-class Ship:
+class Ship(Sprite):
     """odpowiedzialna za statek strzelajacy"""
 
     def __init__(self, screen, game_settings):
         """inicjalizacja statku i jego polozenie na ekranie"""
+        super().__init__()
         self.screen = screen
         self.game_settings = game_settings
 
