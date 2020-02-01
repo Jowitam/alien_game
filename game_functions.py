@@ -5,7 +5,7 @@ from alien import Alien
 from bullet import Bullet
 
 
-def check_events(ship, bullets, screen, game_settings, play_button, stats, aliens):
+def check_events(ship, bullets, screen, game_settings, play_button, stats, aliens, score_board):
     """reakcja na zdarzenie generowane przez mysz i klawiature"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -16,23 +16,32 @@ def check_events(ship, bullets, screen, game_settings, play_button, stats, alien
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(play_button, mouse_x, mouse_y, stats, aliens, bullets, ship, game_settings, screen)
+            check_play_button(play_button, mouse_x, mouse_y, stats, aliens, bullets, ship, game_settings, screen, score_board)
 
 
-def check_play_button(play_button, mouse_x, mouse_y, stats, aliens, bullets, ship, game_settings, screen):
+def check_play_button(play_button, mouse_x, mouse_y, stats, aliens, bullets, ship, game_settings, screen, score_board):
     """Rozpoczecie nowej gry po kliknieciu w przycisk GRA"""
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
         # wyzerowanie ustawien dot gry - szybkosci
         game_settings.initialize_dynamic_settings()
+
         # ukrycie kursora myszy
         pygame.mouse.set_visible(False)
+
         # wyzwerowanie danych statycznych
         stats.reset_stats()
         stats.game_active = True
+
+        # wyzerowanie tablicy wynikow
+        score_board.prep_score()
+        score_board.prep_high_score()
+        score_board.prep_level()
+
         # usuniecie obcych, pociskow
         aliens.empty()
         bullets.empty()
+
         # nowa flota i statek
         create_alien_fleet(game_settings, screen, aliens, ship)
         ship.center_ship()
@@ -84,8 +93,14 @@ def check_bullet_alien_collisions(aliens, bullets, game_settings, screen, ship, 
         check_high_score(stats, score_board)
     # utworzenie nowej floty po zestrzeleniu oraz przyspieszenie gry oraz pozbycie sie wystrzelonych pociskow
     if len(aliens) == 0:
+        # gdy cala flota zniszczona gracz przechodzi na kolejny poziom
         bullets.empty()
         game_settings.increase_speed()
+
+        # inkrementacja numeru poziomu
+        stats.level += 1
+        score_board.prep_level()
+
         create_alien_fleet(game_settings, screen, aliens, ship)
 
 
