@@ -7,6 +7,8 @@ class GameStats():
         self.reset_stats()
         # stan aktywny gry
         self.game_active = False
+        # najlepszy wynik
+        self.high_score = 0
 
     def reset_stats(self):
         """inicjalizacja danych statycznych ktore zmieniaja sie w trakcie gry"""

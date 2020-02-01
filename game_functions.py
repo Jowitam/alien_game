@@ -81,7 +81,7 @@ def check_bullet_alien_collisions(aliens, bullets, game_settings, screen, ship, 
         for aliens in colisions.values():
             stats.score += game_settings.alien_points * len(aliens)
             score_board.prep_score()
-
+        check_high_score(stats, score_board)
     # utworzenie nowej floty po zestrzeleniu oraz przyspieszenie gry oraz pozbycie sie wystrzelonych pociskow
     if len(aliens) == 0:
         bullets.empty()
@@ -200,3 +200,10 @@ def check_aliens_bottom(screen, aliens, bullets, ship, stats, game_settings):
         if alien.rect.bottom >= screen_rect.bottom:
             ship_hit(stats, aliens, bullets, ship, game_settings, screen)
             break
+
+
+def check_high_score(stats, score_board):
+    """sprawdzenie czy jest nowy najlepszy wynik"""
+    if stats.score > stats.high_score:
+        stats.high_score = stats.score
+        score_board.prep_high_score()

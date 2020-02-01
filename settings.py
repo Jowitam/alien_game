@@ -38,7 +38,7 @@ class Settings():
         self.alien_direction = 1
 
         # punktacja
-        self.alien_points = 50
+        self.alien_points = 20
 
     def increase_speed(self):
         """zmiana szybkosci gry oraz ilosci punktow"""
