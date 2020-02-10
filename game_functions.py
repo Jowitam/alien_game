@@ -9,9 +9,10 @@ def check_events(ship, bullets, screen, game_settings, play_button, stats, alien
     """reakcja na zdarzenie generowane przez mysz i klawiature"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            save_best_high_score(stats)
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(event, ship, bullets, screen, game_settings)
+            check_keydown_events(event, ship, bullets, screen, game_settings, stats)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -48,7 +49,7 @@ def check_play_button(play_button, mouse_x, mouse_y, stats, aliens, bullets, shi
         ship.center_ship()
 
 
-def check_keydown_events(event, ship, bullets, screen, game_settings):
+def check_keydown_events(event, ship, bullets, screen, game_settings, stats):
     if event.key == pygame.K_RIGHT:
         ship.moving_right = True
     elif event.key == pygame.K_LEFT:
@@ -56,6 +57,7 @@ def check_keydown_events(event, ship, bullets, screen, game_settings):
     elif event.key == pygame.K_SPACE:
         fire_bullet(bullets, game_settings, screen, ship)
     elif event.key == pygame.K_q:
+        save_best_high_score(stats)
         sys.exit()
 
 
@@ -225,3 +227,8 @@ def check_high_score(stats, score_board):
     if stats.score > stats.high_score:
         stats.high_score = stats.score
         score_board.prep_high_score()
+
+
+def save_best_high_score(stats):
+    with open(stats.filname, 'w') as file_object:
+        file_object.write(str(stats.high_score))
