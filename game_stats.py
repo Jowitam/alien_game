@@ -1,4 +1,4 @@
-class GameStats():
+class GameStats:
     """monitorowanie danych statycznych gry"""
     # plik z najlepszym wynikiem
     filname = 'best_high_score.txt'

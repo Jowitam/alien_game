@@ -35,10 +35,7 @@ def check_play_button(play_button, mouse_x, mouse_y, stats, aliens, bullets, shi
         stats.game_active = True
 
         # wyzerowanie tablicy wynikow
-        score_board.prep_score()
-        score_board.prep_high_score()
-        score_board.prep_level()
-        score_board.prep_ships()
+        score_board.prep_image()
 
         # usuniecie obcych, pociskow
         aliens.empty()
@@ -69,7 +66,7 @@ def check_keyup_events(event, ship):
 
 
 def fire_bullet(bullets, game_settings, screen, ship):
-    # utworzenie nowego pocisku i dodanie go do grupy
+    """utworzenie nowego pocisku i dodanie go do grupy"""
     if len(bullets) < game_settings.bullets_allowed:
         new_bullet = Bullet(screen, ship, game_settings)
         bullets.add(new_bullet)
@@ -87,14 +84,18 @@ def update_bullets(bullets, aliens, game_settings, screen, ship, stats, score_bo
 
 
 def check_bullet_alien_collisions(aliens, bullets, game_settings, screen, ship, stats, score_board):
-    # sprawdzenie czy pocisk trafil obcego - gdy tak usuniecie obcego i pocisku
+    """sprawdzenie czy pocisk trafil obcego - gdy tak usuniecie obcego i pocisku"""
     colisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
     if colisions:
         for aliens in colisions.values():
             stats.score += game_settings.alien_points * len(aliens)
             score_board.prep_score()
         check_high_score(stats, score_board)
-    # utworzenie nowej floty po zestrzeleniu oraz przyspieszenie gry oraz pozbycie sie wystrzelonych pociskow
+    start_new_level(aliens, bullets, game_settings, score_board, screen, ship, stats)
+
+
+def start_new_level(aliens, bullets, game_settings, score_board, screen, ship, stats):
+    """utworzenie nowej floty po zestrzeleniu oraz przyspieszenie gry oraz pozbycie sie wystrzelonych pociskow"""
     if len(aliens) == 0:
         # gdy cala flota zniszczona gracz przechodzi na kolejny poziom
         bullets.empty()
@@ -230,5 +231,6 @@ def check_high_score(stats, score_board):
 
 
 def save_best_high_score(stats):
+    """zapis najlepszego wyniku do pliku"""
     with open(stats.filname, 'w') as file_object:
         file_object.write(str(stats.high_score))
